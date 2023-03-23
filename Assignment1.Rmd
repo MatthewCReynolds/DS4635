@@ -1,0 +1,14 @@
+---
+title: "Assignment 1"
+output: html_notebook
+---
+
+
+```{r}
+college <- read.csv("https://www.statlearning.com/s/College.csv")
+
+
+```
+
+
+
