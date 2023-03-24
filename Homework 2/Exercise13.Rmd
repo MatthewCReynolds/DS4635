@@ -1,0 +1,151 @@
+---
+title: "Assignment 2"
+author: "Matthew Reynolds"
+date: "24 March 2023"
+output:
+  html_document:
+    df_print: paged
+---
+<b>Introduction:</b>\
+Following along with Chapter 3 and Chapter 7 of "Introduction to Statistical Learning First Edition" from www.statlearning.com.
+
+<b>Exercise #13:</b>\
+In this exercise you will create some simulated data and will fit simple linear regression models to it. Make sure to use set.seed(1) prior to starting part (a) to ensure consistent results.
+
+<b>A)</b> Using the rnorm() function, create a vector, x, containing 100 observations drawn from a N(0,1) distribution. This represents a feature, X.
+```{r}
+set.seed(1)
+x <- rnorm(100)
+```
+\
+
+<b>B)</b> Using the rnorm() function, create a vector, eps, containing 100 observations drawn from a N(0,0.25) distribution i.e. a normal distribution with mean zero and variance 0.25.
+```{r}
+eps <- rnorm(100, sd = sqrt(0.25))
+```
+\
+<b>C)</b> Using x and eps, generate a vector y according to the model:\
+$$\large Y = -1 + 0.5X + \epsilon$$
+What is the length of the vector y? What are the values of β0 and β1 in this linear model?
+```{r}
+y <- -1 + (0.5 * x) + eps
+length(y)
+```
+<center><i>$\beta_0$ is -1 and $\beta_1$ is 0.5</i></center>\ \
+
+<b>D)</b> Create a scatterplot displaying the relationship between x and y. Comment on what you observe.
+```{r}
+plot(x,y)
+```
+<center><i>It looks like a positive slope with a bit of flaring (noise) from the random error.</i></center> \
+
+<b>E)</b> Fit a least squares linear model to predict y using x. Comment on the model obtained. How do βˆ0 and βˆ1 compare to β0 and β1?
+```{r}
+leastSquares <- lm(y ~ x)
+summary(leastSquares)
+```
+<center><i>This model has a quite large F-statistic at 85.99 with a essentially 0 p-value.</i></center> \
+
+<b>F)</b> Display the least squares line on the scatterplot obtained in (d). Draw the population regression line on the plot, in a different color. Use the legend() command to create an appropriate legend.
+```{r}
+plot(x, y, main = "Original Noise")
+abline(leastSquares, col = 3)
+abline(-1, 0.5, col = 4)
+legend("bottomright", c("Least square", "Regression"), col = c("3", "4"), lty = c(1, 1)) 
+```
+\
+<b>G)</b> Now fit a polynomial regression model that predicts y using x and $x^2$. Is there evidence that the quadratic term improves the model fit? Explain your answer.
+```{r}
+polyReg <- lm(y ~ x + I(x^2))
+summary(polyReg)
+```
+<center><i>$x^2$ is not significant since it doesn't achieve a p-value lower than 0.05.</i></center> \
+
+<b>H)</b> Repeat (a)–(f) after modifying the data generation process in such a way that there is less noise in the data. The model (3.39) should remain the same. You can do this by decreasing the vari- ance of the normal distribution used to generate the error term ε in (b). Describe your results.
+```{r}
+set.seed(1)
+x <- rnorm(100)
+eps <- rnorm(100, sd = (sqrt(0.25) * 0.25))
+y <- -1 + (0.5 * x) + eps
+```
+
+```{r}
+plot(x,y)
+```
+
+```{r}
+model <- lm(y ~ x)
+summary(model)
+```
+
+```{r}
+plot(x,y, main = "Less Noise")
+abline(model, col = 2)
+abline(-1, 0.5, col = 4)
+legend("bottomright", c("Polynomial Regression", "Regression"), col = c("2", "4"), lty = c(1, 1)) 
+```
+<center><i>I reduced the noise by multiplying my \epsilon standard deviation by 0.25. The regression lines are near identical to each other.</i></center> \
+
+<b>I)</b> Repeat (a)–(f) after modifying the data generation process in such a way that there is more noise in the data. The model (3.39) should remain the same. You can do this by increasing the variance of the normal distribution used to generate the error term ε in (b). Describe your results.
+```{r}
+set.seed(1)
+x <- rnorm(100)
+eps <- rnorm(100, sd = 0.5)
+y <- -1 + (0.5 * x) + eps
+```
+
+```{r}
+plot(x,y)
+```
+
+```{r}
+model2 <- lm(y ~ x)
+summary(model2)
+```
+
+```{r}
+plot(x,y, main = "More Noise")
+abline(model2, col = 2)
+abline(-1, 0.5, col = 4)
+legend("bottomright", c("Polynomial Regression", "Regression"), col = c("2", "4"), lty = c(1, 1)) 
+```
+<center><i>I increased the noise by multiplying my \epsilon standard deviation by 4. The regression lines are near identical to each other.</i></center> \
+
+<b>J)</b> What are the confidence intervals for β0 and β1 based on the original data set, the noisier data set, and the less noisy data set? Comment on your results.
+```{r}
+set.seed(1)
+x <- rnorm(100)
+
+#original noise
+eps <- rnorm(100, sd = sqrt(0.25))
+y <- -1 + (0.5 * x) + eps
+
+#less noise
+epsLessNoise <- rnorm(100, sd = (sqrt(0.25) * 0.25))
+yLessNoise <- -1 + (0.5 * x) + epsLessNoise
+
+#more noise
+epsMoreNoise <- rnorm(100, sd = 0.5)
+yMoreNoise <- -1 + (0.5 * x) + epsMoreNoise
+```
+
+```{r}
+fit_lm <- function(train, test) {
+  LinModel <- lm(y ~ x, data = train)
+  pred <- predict(LinModel, newdata = test)
+  return(pred)
+}
+```
+
+```{r}
+library(boot)
+cv_orig <- cv.glm(data = data.frame(x, y), glmfit = fit_lm, K = 10)
+cv_LessNoise <- cv.glm(data = data.frame(x, y_LessNoise), m = fit_lm, K = 10)
+cv_MoreNoise <- cv.glm(data = data.frame(x, y_MoreNoise), m = fit_lm, K = 10)
+```
+
+
+
+
+
+
