@@ -112,37 +112,11 @@ legend("bottomright", c("Polynomial Regression", "Regression"), col = c("2", "4"
 <center><i>I increased the noise by multiplying my \epsilon standard deviation by 4. The regression lines are near identical to each other.</i></center> \
 
 <b>J)</b> What are the confidence intervals for β0 and β1 based on the original data set, the noisier data set, and the less noisy data set? Comment on your results.
-```{r}
-set.seed(1)
-x <- rnorm(100)
 
-#original noise
-eps <- rnorm(100, sd = sqrt(0.25))
-y <- -1 + (0.5 * x) + eps
+<center><i> This part was removed from the assignment after I asked in class for the Cross-Validation R demo. </i></center> \
 
-#less noise
-epsLessNoise <- rnorm(100, sd = (sqrt(0.25) * 0.25))
-yLessNoise <- -1 + (0.5 * x) + epsLessNoise
 
-#more noise
-epsMoreNoise <- rnorm(100, sd = 0.5)
-yMoreNoise <- -1 + (0.5 * x) + epsMoreNoise
-```
 
-```{r}
-fit_lm <- function(train, test) {
-  LinModel <- lm(y ~ x, data = train)
-  pred <- predict(LinModel, newdata = test)
-  return(pred)
-}
-```
-
-```{r}
-library(boot)
-cv_orig <- cv.glm(data = data.frame(x, y), glmfit = fit_lm, K = 10)
-cv_LessNoise <- cv.glm(data = data.frame(x, y_LessNoise), m = fit_lm, K = 10)
-cv_MoreNoise <- cv.glm(data = data.frame(x, y_MoreNoise), m = fit_lm, K = 10)
-```
 
 
 

@@ -1824,29 +1824,12 @@ regression lines are near identical to each other.</i>
 <p><b>J)</b> What are the confidence intervals for β0 and β1 based on
 the original data set, the noisier data set, and the less noisy data
 set? Comment on your results.</p>
-<pre class="r"><code>set.seed(1)
-x &lt;- rnorm(100)
-
-#original noise
-eps &lt;- rnorm(100, sd = sqrt(0.25))
-y &lt;- -1 + (0.5 * x) + eps
-
-#less noise
-epsLessNoise &lt;- rnorm(100, sd = (sqrt(0.25) * 0.25))
-yLessNoise &lt;- -1 + (0.5 * x) + epsLessNoise
-
-#more noise
-epsMoreNoise &lt;- rnorm(100, sd = 0.5)
-yMoreNoise &lt;- -1 + (0.5 * x) + epsMoreNoise</code></pre>
-<pre class="r"><code>fit_lm &lt;- function(train, test) {
-  LinModel &lt;- lm(y ~ x, data = train)
-  pred &lt;- predict(LinModel, newdata = test)
-  return(pred)
-}</code></pre>
-<pre class="r"><code># library(boot)
-# cv_orig &lt;- cv.glm(data = data.frame(x, y), glmfit = fit_lm, K = 10)
-# cv_LessNoise &lt;- cv.glm(data = data.frame(x, y_LessNoise), m = fit_lm, K = 10)
-# cv_MoreNoise &lt;- cv.glm(data = data.frame(x, y_MoreNoise), m = fit_lm, K = 10)</code></pre>
+<center>
+<i> This part was removed from the assignment after I asked in class for
+the Cross-Validation R demo. </i>
+</center>
+<p><br />
+</p>
 
 
 
