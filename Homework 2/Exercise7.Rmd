@@ -1,0 +1,73 @@
+---
+title: "Exercise7"
+author: "Matthew Reynolds"
+date: "2023-03-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+<b>Introduction:</b>\
+Following along with Chapter 7 of "Introduction to Statistical Learning First Edition" from www.statlearning.com.
+
+<b>Exercise #7:</b>\
+The Wage data set contains a number of other features not explored in this chapter, such as marital status (maritl), job class (jobclass), and others. Explore the relationships between some of these other predictors and wage, and use non-linear fitting techniques in order to fit flexible models to the data. Create plots of the results obtained, and write a summary of your findings. \
+\
+<b>Initial data exploration:</b>\
+```{r}
+library(ggplot2)
+Wage <- read.csv("./dataset-37830.csv")
+summary(Wage)
+head(Wage)
+```
+<center><i>Opening Wage data-set and checking out the data.</i></center> \
+
+```{r}
+plot(Wage$year, Wage$wage)
+```
+<center><i>Checking out graph of Year VS Wage</i></center> \
+
+```{r}
+ggplot(Wage, aes(x = education, y = wage, fill = education)) + 
+  geom_boxplot() + 
+  theme(legend.position = "none")
+```
+<center><i>Checking out graph of Education level and Wage</i></center> \
+
+```{r}
+ggplot(Wage, aes(x = maritl, y = wage, fill = maritl)) + 
+  geom_boxplot() + 
+  theme(legend.position = "none")
+```
+<center><i>Checking out graph of Marital status and Wage</i></center> \
+
+```{r}
+ggplot(Wage, aes(x = health, y = wage, fill = health)) + 
+  geom_boxplot() + 
+  theme(legend.position = "none")
+```
+<center><i>Checking out graph of Health and Wage</i></center> \
+
+```{r}
+ggplot(Wage, aes(x = jobclass, y = wage, fill = jobclass)) + 
+  geom_boxplot() + 
+  theme(legend.position = "none")
+```
+<center><i>Checking out graph of Job class and Wage</i></center> \
+
+```{r}
+ggplot(Wage, aes(x = jobclass, y = wage, fill = maritl)) + 
+  geom_boxplot() + 
+  theme(legend.position = "none")
+```
+<center><i>Checking out graph of Job class and Wage broken up by Marital status</i></center> \
+
+
+<b>Making and fitting models:</b>
+
+
+
+
