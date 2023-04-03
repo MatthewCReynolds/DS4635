@@ -1,0 +1,58 @@
+---
+title: "Exercise8"
+author: "Matthew Reynolds"
+date: "2023-04-03"
+output: html_document
+---
+
+<b>Introduction:</b>\
+Following along with Chapter 7 of "Introduction to Statistical Learning First Edition" from www.statlearning.com.
+
+<b>Exercise #8:</b>\
+Fit some of the non-linear models investigated in this chapter to the Auto data set. Is there evidence for non-linear relationships in this data set? Create some informative plots to justify your answer. \
+\
+
+<b>Initial data exploration:</b>
+```{r, message = FALSE}
+library(GGally)
+library(ISLR)
+pairs(Auto)
+```
+<center><i>It would appear that the correlation between MPG and seemingly everything is non-linear.</i></center>\
+
+```{r, message = FALSE}
+ggplot(Auto, aes(x = displacement, y = mpg)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth()
+```
+```{r, message = FALSE}
+ggplot(Auto, aes(x = horsepower, y = mpg)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth()
+```
+
+```{r, message = FALSE}
+ggplot(Auto, aes(x = weight, y = mpg)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth()
+```
+
+```{r, message = FALSE}
+ggplot(Auto, aes(x = acceleration, y = mpg)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth()
+```
+
+```{r, message = FALSE}
+ggplot(Auto, aes(x = year, y = mpg)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth()
+```
+
+<b>Answer:</b>
+\
+<center><i>I would definetly say there's non linear relationships in this data. All of those graphs are clearly non linear. Especially the mpg x acceleration (second from bottom).</i></center>\
+\
+\
+
+

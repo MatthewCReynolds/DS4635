@@ -1,5 +1,5 @@
 ---
-title: "Exercise7"
+title: "Exercise 7"
 author: "Matthew Reynolds"
 date: "2023-03-30"
 output: html_document
@@ -18,7 +18,7 @@ The Wage data set contains a number of other features not explored in this chapt
 \
 <b>Initial data exploration:</b>\
 ```{r}
-library(ggplot2)
+library(GGally)
 Wage <- read.csv("./dataset-37830.csv")
 summary(Wage)
 head(Wage)
@@ -65,8 +65,17 @@ ggplot(Wage, aes(x = jobclass, y = wage, fill = maritl)) +
 ```
 <center><i>Checking out graph of Job class and Wage broken up by Marital status</i></center> \
 
+```{r message = FALSE } 
+WageReduced <- subset(Wage, select = c("age", "education", "jobclass", "wage"))
+ggpairs(WageReduced)
+ggpairs(Wage)
+```
+
 
 <b>Making and fitting models:</b>
+```{r}
+#pairs(Wage$wage, Wage)
+```
 
 
 
