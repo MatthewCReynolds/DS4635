@@ -1,0 +1,55 @@
+---
+title: "Exercise2"
+author: "Matthew Reynolds"
+date: "2023-04-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<b>Question:</b>\
+We will now derive the probability that a given observation is part of a bootstrap sample. Suppose that we obtain a bootstrap sample from a set of n observations.
+
+(a) What is the probability that the first bootstrap observation is not the jth observation from the original sample? Justify your answer.
+<i><center>The probability that the first bootstrap observation is not the jth observation from the origional sample is found with the equation: $\large \frac{n-1}{n}$. This is because each observation has an equal probability of being selected, and the jth observation has a probability of $\large\frac{1}{n}$ of being selected. </center></i>
+
+
+(b) What is the probability that the second bootstrap observation is not the jth observation from the original sample?
+<i><center>The probability that the second bootstrap observation is not the jth observation is the same as above, $\large \frac{n-1}{n}$ </center></i>
+
+
+(c) Argue that the probability that the jth observation is not in the bootstrap sample is (1 − 1/n)n.\
+<i><center>Since $\frac{n-1}{n}=1-\frac{1}{n}$ and that we bootstrap with $n$ draws, therefore the probability that it is not selected in a single bootstrap sample, is raised to the power of n. So our new equation is \( (1 - \frac{1}{n})^n \)</center></i>
+
+(d) When n = 5, what is the probability that the jth observation is in the bootstrap sample?\
+<i><center>When $n = 5$ the probability that the jth observation is in the bootstrap sample is \( (1 - \frac{1}{5})^5 \) which equals to 67.23%.
+</center></i>
+
+(e) When n = 100, what is the probability that the jth observation is in the bootstrap sample?
+<i><center>When $n = 100$ the probability that the jth observation is in the bootstrap sample is \( (1 - \frac{1}{100})^{100} \) which equals to 63.39%%. </center></i>
+
+(f) When n = 10, 000, what is the probability that the jth observa- tion is in the bootstrap sample?
+<i><center>When $n = 10,000$ the probability that the jth observation is in the bootstrap sample is \( (1 - \frac{1}{10000})^{10000} \) which equals to 63.21%%. </center></i>
+
+(g) Create a plot that displays, for each integer value of n from 1 to 100,000, the probability that the jth observation is in the bootstrap sample. Comment on what you observe.
+```{r}
+x=seq(1,100000)
+y=sapply(x,function(n){1-((1-(1/n))^n)})
+plot(x,y,xlab="n",ylab="Probability is in the bootstrap",log="x")
+```
+<i><center>The probability quickly drops to roughly 63% at a bit over 100 and plateaus there.</center></i>
+
+(h) We will now investigate numerically the probability that a boot- strap sample of size n = 100 contains the jth observation. Here j = 4. We repeatedly create bootstrap samples, and each time we record whether or not the fourth observation is contained in the bootstrap sample.
+```{r}
+store=rep(NA, 10000)
+for(i in 1:10000){
+  store[i]=sum(sample(1:100, rep=TRUE)==4)>0 
+}
+mean(store)
+```
+<i><center>This made a list of 10,000. Then it sampled 100 digist from it and 64.44% of the time, j was in the sample.</center></i>
+
+
+

@@ -1,0 +1,124 @@
+---
+title: "Exercise 10"
+author: "Matthew Reynolds"
+date: "2023-04-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<b>Question:</b>\
+This question should be answered using the Weekly data set, which is part of the ISLR package. This data is similar in nature to the Smarket data from this chapter’s lab, except that it contains 1,089 weekly returns for 21 years, from the beginning of 1990 to the end of 2010. \ 
+```{r, include=FALSE}
+library(ISLR)
+library(GGally)
+```
+
+\large <b>A)</b>
+```{r}
+summary(Weekly)
+```
+
+```{r, warning=FALSE, message=FALSE}
+ggpairs(Weekly, 
+        columns = 1:8,
+        title = "Correlation Plot of Weekly Dataset", 
+        upper = list(wrap(continuous = "cor", funcVal = cor, method = "pearson")),
+        lower = list(wrap(continuous = "smooth", funcVal = smooth, method = "lm")),
+        diag = list(continuous = "density"),
+        axisLabels = "show"
+        )
+```
+\
+\
+<i><center>I would say there seems to be a pattern between our Year and Volume which looks like it increases quadraticly. Otherwise, everything else seems rather Blob-like.</i></center>
+
+\
+\
+<b>B)</b>
+```{r}
+fit <- glm(Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume, data = Weekly, family = binomial)
+summary(fit)
+```
+<i><center>It would appear that Lag2 is the only one to have a P-Value lower than 0.05, so I would say it's the only significant one.</center></i>
+
+<b>C)</b>
+```{r}
+predicted <- predict(fit, type = "response")
+predicted_direction <- ifelse(predicted > 0.5, "Up", "Down")
+confusion_df <- data.frame(Actual = Weekly$Direction, Predicted = predicted_direction)
+confusion_matrix <- t(table(confusion_df))
+print(confusion_matrix)
+```
+
+```{r}
+overall_accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+cat("Overall Fraction of Correct Predictions:", overall_accuracy, "\n")
+```
+<i><center>My True Positive was 557, meaning it predicted UP correctly. My False Positive was 430, meaning it predicted UP incorrectly. My True Negative was 54 meaning it predicted Down correctly. And My False Negative was 48 meaning it predicted Down incorrectly. My model was correct for ~56% of its predictions. </center></i>
+\
+\
+<b>D)</b>
+```{r}
+train_data <- Weekly[Weekly$Year <= 2008, ]
+test_data <- Weekly[Weekly$Year > 2008, ]
+model <- glm(Direction ~ Lag2, data = train_data, family = binomial)
+predictions <- predict(model, newdata = test_data, type = "response")
+predicted_directions <- ifelse(predictions > 0.5, "Up", "Down")
+confusion_matrix <- table(test_data$Direction, predicted_directions)
+overall_accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+confusion_matrix <- t(confusion_matrix)
+cat("Confusion Matrix:\n")
+print(confusion_matrix)
+cat("\nOverall Fraction of Correct Predictions:", overall_accuracy)
+```
+<i><center>The model correctly predicts the weekly trend only 62.5% of the time. </center></i>
+
+<b>I)</b>
+```{r}
+train_data <- Weekly[Weekly$Year < 2009, ]
+test_data <- Weekly[Weekly$Year >= 2009, ]
+
+predictors <- c("Lag2", "Lag1", "Lag3", "Lag4", "Lag5", "Volume")
+
+# Initialize best_model, best_variables, and best_accuracy
+best_model <- NULL
+best_variables <- NULL
+best_accuracy <- 0
+
+#brute force it
+for (i in 1:length(predictors)) {
+  for (j in 1:length(predictors)) {
+    if (i == j) next
+    
+    predictors_current <- c(predictors[i], predictors[j])
+    model <- glm(Direction ~ ., data = train_data[, c(predictors_current, "Direction")], family = "binomial")
+    
+    predicted_directions <- ifelse(predict(model, test_data) > 0.5, "Up", "Down")
+    confusion_matrix <- table(predicted_directions, test_data$Direction)
+    overall_accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+    
+    if (overall_accuracy > best_accuracy) {
+      best_model <- model
+      best_confusion_matrix <- t(confusion_matrix)
+      best_accuracy <- overall_accuracy
+      best_variables <- paste(predictors_current, collapse = ", ")
+    }
+  }
+}
+
+# output
+cat("Best Model:\n")
+print(best_model)
+
+cat("Best Confusion Matrix:\n")
+print(best_confusion_matrix)
+
+cat("Variables used in the best-performing model:", best_variables, "\n")
+
+cat("Best Overall Fraction of Correct Predictions:", best_accuracy)
+```
+
+

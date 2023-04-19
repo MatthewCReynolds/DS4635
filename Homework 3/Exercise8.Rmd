@@ -1,0 +1,91 @@
+---
+title: "Exercise8"
+author: "Matthew Reynolds"
+date: "2023-04-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(boot)
+```
+
+<b>Question:</b>\
+We will now perform cross-validation on a simulated data set.
+(a) Generate a simulated data set as follows:
+```{r}
+set.seed(1)
+x=rnorm(100)
+y=x-2*x^2+rnorm(100)
+```
+
+In this data set, what is n and what is p? Write out the model used to generate the data in equation form.
+<i><center>N is the number of observations, 100, and p is the number of predictor variables, 1. The equation for this is: \
+$y = {\beta}_{0} + {\beta}_{1}*X + 2*X^2 + ε$ </center></i>
+
+(b) Create a scatterplot of X against Y . Comment on what you find.
+```{r}
+plot(x, y, xlim = range(-3:3), ylim = range(-15:4))
+par(new = TRUE)
+curve(x - 2*x^2, from = -3, to = 3, xlim = range(-3:3), ylim = range(-15:4), xlab = "", ylab = "", col = "red")
+```
+<i><center>X has a negative quadratic relationship to Y. Peaking around x = 0.2, y = 0. </center></i>
+
+(c) Set a random seed, and then compute the LOOCV errors that result from fitting the following four models using least squares:
+        
+i. Y = β0 + β1X + ε
+ii. Y = β0 + β1X + β2X2 + ε
+iii. Y = β0 +β1X +β2X2 +β3X3 +ε
+iv. Y = β0 +β1X +β2X2 +β3X3 +β4X4 +ε.
+Note you may find it helpful to use the data.frame() function
+to create a single data set containing both X and Y .
+```{r}
+set.seed(499)
+xy.data = data.frame("pred" = x, "resp" = y)
+
+deg1.fit = glm(resp ~ pred, data = xy.data)
+deg1.err = cv.glm(xy.data, deg1.fit)
+cat("The LOOCV of Option I is: ", deg1.err$delta[1], "\n")
+
+deg2.fit = glm(resp ~ poly(pred, 2), data = xy.data)
+deg2.err = cv.glm(xy.data, deg2.fit)
+cat("The LOOCV of Option II is: ", deg2.err$delta[1], "\n")
+
+deg3.fit = glm(resp ~ poly(pred, 3), data = xy.data)
+deg3.err = cv.glm(xy.data, deg3.fit)
+cat("The LOOCV of Option III is: ", deg3.err$delta[1], "\n")
+
+deg4.fit = glm(resp ~ poly(pred, 4), data = xy.data)
+deg4.err = cv.glm(xy.data, deg4.fit)
+cat("The LOOCV of Option IV is: ", deg4.err$delta[1], "\n")
+```
+
+(d) Repeat (c) using another random seed, and report your results.
+Are your results the same as what you got in (c)? Why?
+```{r}
+set.seed(3)
+xy.data = data.frame("pred" = x, "resp" = y)
+
+deg1.fit = glm(resp ~ pred, data = xy.data)
+deg1.err = cv.glm(xy.data, deg1.fit)
+cat("The LOOCV of Option I is: ", deg1.err$delta[1], "\n")
+
+deg2.fit = glm(resp ~ poly(pred, 2), data = xy.data)
+deg2.err = cv.glm(xy.data, deg2.fit)
+cat("The LOOCV of Option II is: ", deg2.err$delta[1], "\n")
+
+deg3.fit = glm(resp ~ poly(pred, 3), data = xy.data)
+deg3.err = cv.glm(xy.data, deg3.fit)
+cat("The LOOCV of Option III is: ", deg3.err$delta[1], "\n")
+
+deg4.fit = glm(resp ~ poly(pred, 4), data = xy.data)
+deg4.err = cv.glm(xy.data, deg4.fit)
+cat("The LOOCV of Option IV is: ", deg4.err$delta[1], "\n")
+```
+<i><center>The LOOCV are the exact same for both of my seeds. This is because LOOCV doesn't involve any randomness which could change the results. </center></i>
+
+
+(e) Which of the models in (c) had the smallest LOOCV error? Is this what you expected? Explain your answer.
+<i><center> The $y = {\beta}_{0} + {\beta}_{1}*X + 2*X^2 + ε$, aka the second option had the lowest LOOCV error of the 4. This didn't surprise me because this is what we used to compute the original data.  </center></i>
+
+
